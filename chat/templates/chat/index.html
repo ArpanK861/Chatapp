@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RealTime Chat</title>
+    <link rel="stylesheet" href="{% static 'chat/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 RealTime Chat</h1>
+            <p>Distributed Chat with Django Channels</p>
+            <p>👥 Online Users: <span id="userCount">0</span></p>
+        </div>
+
+        <div id="authSection" class="auth-section">
+            <h3>Login / Register</h3>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <input type="text" id="room" placeholder="Room name" value="general">
+            <button onclick="login()">Login</button>
+            <button onclick="register()">Register</button>
+            <div id="authStatus"></div>
+        </div>
+
+        <div id="chatSection" class="chat-section hidden">
+            <div id="connectionStatus" class="status disconnected">Disconnected</div>
+            <div class="messages" id="messages"></div>
+            <div id="typingIndicator" class="hidden" style="font-style: italic; color: gray; font-size: 0.8em; margin-bottom: 5px;"></div>
+            <div class="input-group">
+                <input type="text" id="messageInput" oninput="handleTyping()" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendMessage()">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+            <button class="history-btn" onclick="loadHistory()">Load History</button>
+            <button class="history-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <script src="{% static 'chat/script.js' %}"></script>
+</body>
+</html>

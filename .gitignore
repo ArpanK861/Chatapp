@@ -1,0 +1,28 @@
+# --- Sensitive Config ---
+.env
+docker-compose.yml
+docker-compose.override.yml
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# --- Django ---
+db.sqlite3
+db.sqlite3-journal
+media/
+static_root/
+staticfiles/
+
+# --- Databases/Docker ---
+*.sqlite3
+postgres_data/
+
+# --- IDE/OS ---
+.vscode/
+.idea/
+.DS_Store
