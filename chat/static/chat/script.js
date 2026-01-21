@@ -124,11 +124,23 @@ function addMessage(sender, text, isOwn) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${isOwn ? 'own' : 'other'}`;
     const now = new Date().toLocaleTimeString();
-    messageDiv.innerHTML = `
-        <div class="sender">${sender}</div>
-        <div>${text}</div>
-        <div class="timestamp">${now}</div>
-    `;
+    
+    // Create elements safely to prevent XSS attacks
+    const senderDiv = document.createElement('div');
+    senderDiv.className = 'sender';
+    senderDiv.textContent = sender;
+    
+    const textDiv = document.createElement('div');
+    textDiv.textContent = text;
+    
+    const timestampDiv = document.createElement('div');
+    timestampDiv.className = 'timestamp';
+    timestampDiv.textContent = now;
+    
+    messageDiv.appendChild(senderDiv);
+    messageDiv.appendChild(textDiv);
+    messageDiv.appendChild(timestampDiv);
+    
     messagesDiv.appendChild(messageDiv);
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }

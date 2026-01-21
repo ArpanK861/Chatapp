@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,12 +25,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-development-key-12345")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG")
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = ['*']
+# Configure allowed hosts from environment variable (comma-separated)
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 # Allow the browser to connect to WebSockets from these origins
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'http://127.0.0.1:8000']
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "http://localhost:8000,http://127.0.0.1:8000").split(",")
 
 # Application definition
 
@@ -87,13 +89,16 @@ ASGI_APPLICATION = "realtimechat.asgi.application"
 #}
 
 DATABASES = {
-    'default': {
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=600
+    ) or {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'chatdb',       
-        'USER': 'user',         
-        'PASSWORD': 'pass',     
-        'HOST': 'db',           
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME', 'chatdb'),
+        'USER': os.getenv('DB_USER', 'user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'pass'),
+        'HOST': os.getenv('DB_HOST', 'db'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
@@ -139,7 +144,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'chat', 'static')]
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {"hosts": [("redis", 6379)]}
+        "CONFIG": {"hosts": [os.getenv("REDIS_URL", "redis://localhost:6379")]}
     }
 }
 
